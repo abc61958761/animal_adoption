@@ -8,7 +8,7 @@ import User from '../models/user';
  * @returns {Promise}
  */
 export function getAllUsers() {
-  return User.fetchAll();
+  return User.find();
 }
 
 /**
@@ -18,9 +18,8 @@ export function getAllUsers() {
  * @returns {Promise}
  */
 export function getUser(id) {
-  return new User({ id })
-    .fetch()
-    .then(user => user)
+  return User.findById(id)
+    .then((user) => user)
     .catch(User.NotFoundError, () => {
       throw Boom.notFound('User not found');
     });
@@ -33,7 +32,7 @@ export function getUser(id) {
  * @returns {Promise}
  */
 export function createUser(user) {
-  return new User({ name: user.name }).save();
+  return new User(user).save();
 }
 
 /**
@@ -44,7 +43,7 @@ export function createUser(user) {
  * @returns {Promise}
  */
 export function updateUser(id, user) {
-  return new User({ id }).save({ name: user.name });
+  return User.findByIdAndUpdate({ _id: id }, { name: user.name }, { new: true });
 }
 
 /**
@@ -54,5 +53,5 @@ export function updateUser(id, user) {
  * @returns {Promise}
  */
 export function deleteUser(id) {
-  return new User({ id }).fetch().then(user => user.destroy());
+  return new User({ id }).fetch().then((user) => user.destroy());
 }
